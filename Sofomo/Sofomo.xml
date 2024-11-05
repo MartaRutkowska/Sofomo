@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Sofomo</name>
+    </assembly>
+    <members>
+        <member name="M:Sofomo.Controllers.ForecastController.Get(System.String,System.String)">
+            <summary>
+            Retrieves a weather forecast for provided coordinates
+            </summary>
+            <response code="200">Forecast retrieved successfully</response>
+            <response code="500">Oops! Something went wrong</response>
+        </member>
+        <member name="M:Sofomo.Controllers.ForecastController.AddForecast(Sofomo.Domain.Models.Request.Coordinates)">
+            <summary>
+            Stores provided coordinates
+            </summary>
+            <response code="201">Coordinates saved successfully</response>
+            <response code="500">Oops! Something went wrong</response>
+        </member>
+        <member name="M:Sofomo.Controllers.ForecastController.DeleteForecast(Sofomo.Domain.Models.Request.Coordinates)">
+            <summary>
+            Removes provided coordinated
+            </summary>
+            <response code="204">Coordinates deleted</response>
+            <response code="500">Oops! Something went wrong</response>
+        </member>
+        <member name="T:Sofomo.Migrations.InitialCreate">
+            <inheritdoc />
+        </member>
+        <member name="M:Sofomo.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sofomo.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Sofomo.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>
