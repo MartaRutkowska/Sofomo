@@ -1,24 +1,18 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Update;
-using Sofomo.Commands;
-using Sofomo.Handlers.CommandHandler;
-using Sofomo.Handlers.CommandHandlers;
-using Sofomo.Handlers.QueryHandlers;
-using Sofomo.Models.Dtos;
-using Sofomo.Models.Request;
-using Sofomo.Models.Response;
-using Sofomo.Queries;
-using Sofomo.Repositories;
-using Sofomo.Validators;
+using Sofomo.CQRS.Commands;
+using Sofomo.CQRS.Handlers.CommandHandlers;
+using Sofomo.CQRS.Handlers.QueryHandlers;
+using Sofomo.CQRS.Queries;
+using Sofomo.Domain.Models.Dtos;
+using Sofomo.Domain.Models.Request;
+using Sofomo.Domain.Models.Response;
+using Sofomo.Utils.Validators;
 
 namespace Sofomo.Services
 {
     public class ForecastService(
         ExternalMeteoService externalService,
         IMapper mapper,
-        ILocationRepository locationRepository,
-        IWeatherRepository weatherRepository,
         AddCoordinatesCommandHandler addCoordinatesCommandHandler,
         DeleteCoordinatesCommandHandler deleteCoordinatesCommandHandler,
         UpdateWeatherCommandHandler updateWeatherCommandHandler,

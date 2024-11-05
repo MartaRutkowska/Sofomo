@@ -1,13 +1,8 @@
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Sofomo.Config;
-using Sofomo.Handlers;
-using Sofomo.Handlers.CommandHandler;
-using Sofomo.Handlers.CommandHandlers;
-using Sofomo.Handlers.QueryHandlers;
-using Sofomo.Mappers;
-using Sofomo.Repositories;
+using Sofomo.CQRS.Handlers;
+using Sofomo.CQRS.Repositories;
 using Sofomo.Services;
+using Sofomo.Utils.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 

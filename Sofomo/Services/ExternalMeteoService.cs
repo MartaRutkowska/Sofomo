@@ -1,30 +1,19 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Sofomo.Config;
-using Sofomo.Models.Dtos;
-using Sofomo.Models.Request;
-using Sofomo.Models.Response;
-using System.Net.Http;
-using System.Text;
+using Sofomo.Domain.Models.Request;
+using Sofomo.Domain.Models.Response;
 using System.Text.Json;
 
 namespace Sofomo.Services
 {
-    public class ExternalMeteoService
+    public class ExternalMeteoService(
+        IOptions<ExternalServiceSettings> externalServiceSettings,
+        IHttpClientFactory httpClientFactory,
+        ILogger<ExternalMeteoService> logger)
     {
-        private readonly ExternalServiceSettings _externalServiceSettings;
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<ExternalMeteoService> _logger;
-
-        public ExternalMeteoService(
-            IOptions<ExternalServiceSettings> externalServiceSettings,
-            IHttpClientFactory httpClientFactory,
-            ILogger<ExternalMeteoService> logger)
-        {
-            _externalServiceSettings = externalServiceSettings.Value;
-            _httpClientFactory = httpClientFactory;
-            _logger = logger;
-        }
+        private readonly ExternalServiceSettings _externalServiceSettings = externalServiceSettings.Value;
+        private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+        private readonly ILogger<ExternalMeteoService> _logger = logger;
 
         public async Task<Weather?> Get(Coordinates coordinates)
         {

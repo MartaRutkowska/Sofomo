@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Sofomo.Models.Request;
-using Sofomo.Models.Response;
+using Sofomo.Domain.Models.Request;
 using Sofomo.Services;
 
 namespace Sofomo.Controllers
@@ -17,13 +16,13 @@ namespace Sofomo.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get([FromQuery] Coordinates coordinates)
         {
-            if(coordinates == null)
+            if (coordinates == null)
             {
                 return Ok(await _forecastService.GetAll());
             }
 
             var result = await _forecastService.Get(coordinates);
-            return result != null? Ok(result) : BadRequest("No such location registered in database");
+            return result != null ? Ok(result) : BadRequest("No such location registered in database");
         }
 
         [HttpPut]
@@ -32,7 +31,7 @@ namespace Sofomo.Controllers
         public async Task<IActionResult> AddForecast([FromBody] Coordinates coordinates)
         {
             var result = await _forecastService.AddCoordinates(coordinates);
-            return result? Ok(): BadRequest("Faulty coordinates");
+            return result ? Ok() : BadRequest("Faulty coordinates");
         }
 
         [HttpDelete]
