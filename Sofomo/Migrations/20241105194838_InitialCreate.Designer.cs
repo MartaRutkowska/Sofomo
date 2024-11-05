@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Sofomo.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241105130124_Init3")]
-    partial class Init3
+    [Migration("20241105194838_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,7 +42,7 @@ namespace Sofomo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("LocationId")
+                    b.Property<int>("LocationDtoId")
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("Temperature")
@@ -59,17 +59,17 @@ namespace Sofomo.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId")
+                    b.HasIndex("LocationDtoId")
                         .IsUnique();
 
-                    b.ToTable("WeatherDto");
+                    b.ToTable("Weather");
                 });
 
             modelBuilder.Entity("Sofomo.Models.Dtos.WeatherDto", b =>
                 {
                     b.HasOne("Sofomo.Models.Dtos.LocationDto", "Location")
                         .WithOne("Weather")
-                        .HasForeignKey("Sofomo.Models.Dtos.WeatherDto", "LocationId")
+                        .HasForeignKey("Sofomo.Models.Dtos.WeatherDto", "LocationDtoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

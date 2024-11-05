@@ -11,7 +11,7 @@ public class DatabaseContext : DbContext
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
-        DbPath = Path.Join(path, "Locations.db");
+        DbPath = Path.Join(path, "WeatherForecast.db");
     }
 
     // The following configures EF to create a Sqlite database file in the
