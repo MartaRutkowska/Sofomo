@@ -1,7 +1,7 @@
 
 # Weather app
 
-API letting user get and store latest info about weather for provided coordinates. Uses https://api.open-meteo.com for weather forecast info. If external service is unavailable provides latest data stored in DB.
+This API lets user get/store/delete latest info about weather for provided coordinates. It uses https://api.open-meteo.com for weather forecast info. If external service is unavailable API provides latest data that is stored in DB for given coordinates.
 
 
 
