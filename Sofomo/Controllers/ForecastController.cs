@@ -36,8 +36,8 @@ namespace Sofomo.Controllers
         public async Task<IActionResult> Get([FromQuery] string? Latitude, string? Longitude)
         {
             if (Latitude == null || Longitude == null
-                || !int.TryParse(Latitude, out var parsedLatitude)
-                || !int.TryParse(Longitude, out var parsedLongitude))
+                || !double.TryParse(Latitude, out var parsedLatitude)
+                || !double.TryParse(Longitude, out var parsedLongitude))
             {
                 return Ok(await _forecastService.GetAll());
             }
