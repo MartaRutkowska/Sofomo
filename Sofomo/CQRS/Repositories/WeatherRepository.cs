@@ -1,36 +1,33 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Sofomo.CQRS.Repositories.Shared;
 using Sofomo.Domain.Models.Dtos;
 
 namespace Sofomo.CQRS.Repositories
 {
-    public class WeatherRepository(DatabaseContext _context) : IWeatherRepository
+    public class WeatherRepository: Repository<WeatherDto>, IWeatherRepository
     {
-        public async Task AddAsync(WeatherDto weather)
+        private DatabaseContext DatabaseContext => Context as DatabaseContext;
+
+        public WeatherRepository(DatabaseContext context) : base(context)
         {
-            await _context.Weather.AddAsync(weather);
         }
 
-        public async Task<WeatherDto?> GetAsync(double latitude, double longtitude)
+        public async Task<WeatherDto?> GetByCoordinatesAsync(double latitude, double longtitude)
         {
-            return await _context.Weather.SingleOrDefaultAsync(x => x.Location.Longitude == longtitude && x.Location.Latitude == latitude);
+            return await DatabaseContext.Weather.SingleOrDefaultAsync(x => x.Location.Longitude == longtitude && x.Location.Latitude == latitude);
         }
 
-        public async Task Update(WeatherDto weather, LocationDto location)
+        public async Task UpdateForCoordinates(WeatherDto weather, LocationDto location)
         {
-            var scope = await _context.Locations.SingleAsync(x => x.Id == location.Id);
+            var scope = await DatabaseContext.Locations.SingleAsync(x => x.Id == location.Id);
 
-            var existingWeather = await _context.Weather.SingleOrDefaultAsync(x => x.LocationDtoId == scope.Id);
+            var existingWeather = await DatabaseContext.Weather.SingleOrDefaultAsync(x => x.LocationDtoId == scope.Id);
             if (existingWeather != null)
             {
-                _context.Weather.Remove(existingWeather);
+                DatabaseContext.Weather.Remove(existingWeather);
             }
 
             scope.Weather = weather;
-        }
-
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
         }
     }
 }

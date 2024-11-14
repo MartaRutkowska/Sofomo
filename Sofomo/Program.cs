@@ -2,6 +2,7 @@ using Microsoft.OpenApi.Models;
 using Sofomo.Config;
 using Sofomo.CQRS.Handlers;
 using Sofomo.CQRS.Repositories;
+using Sofomo.CQRS.Repositories.Shared;
 using Sofomo.Services;
 using Sofomo.Utils.Mappers;
 using Swashbuckle.Swagger;
@@ -19,6 +20,7 @@ builder.Services.AddDbContext<DatabaseContext>();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddTransient<ExternalMeteoService>();
 builder.Services.AddTransient<ForecastService>();

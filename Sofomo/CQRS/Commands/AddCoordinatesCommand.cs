@@ -2,5 +2,5 @@
 
 namespace Sofomo.CQRS.Commands
 {
-    public record AddCoordinatesCommand(double Latitude, double Longtitude) : ICommand;
+    public record AddCoordinatesCommand(double Latitude, double Longitude) : ICommand;
 }

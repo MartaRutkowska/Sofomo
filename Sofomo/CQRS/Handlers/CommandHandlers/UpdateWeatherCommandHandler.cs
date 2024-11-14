@@ -1,14 +1,14 @@
 ﻿using Sofomo.CQRS.Commands;
-using Sofomo.CQRS.Repositories;
+using Sofomo.CQRS.Repositories.Shared;
 
 namespace Sofomo.CQRS.Handlers.CommandHandlers
 {
-    public class UpdateWeatherCommandHandler(IWeatherRepository _repository)
+    public class UpdateWeatherCommandHandler(IUnitOfWork UnitOfWork)
     {
         public async Task HandleAsync(UpdateWeatherCommand command)
         {
-            await _repository.Update(command.Weather, command.Location);
-            await _repository.SaveChangesAsync();
+            await UnitOfWork.WeatherRepository.UpdateForCoordinates(command.Weather, command.Location);
+            await UnitOfWork.Complete();
         }
     }
 }

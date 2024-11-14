@@ -1,12 +1,10 @@
-﻿using Sofomo.Domain.Models.Dtos;
+﻿using Sofomo.CQRS.Repositories.Shared;
+using Sofomo.Domain.Models.Dtos;
 
 namespace Sofomo.CQRS.Repositories
 {
-    public interface ILocationRepository : IRepository
+    public interface ILocationRepository : IRepository<LocationDto>
     {
-        Task AddAsync(double latitude, double longtitude);
-        Task<LocationDto?> GetAsync(double latitude, double longtitude);
-        Task<IEnumerable<LocationDto?>> GetAllAsync();
-        Task DeleteAsync(double latitude, double longtitude);
+        Task<LocationDto?> GetByCoordinatesAsync(double Latitude, double Longitude);
     }
 }

@@ -1,14 +1,15 @@
 ﻿using Sofomo.CQRS.Commands;
-using Sofomo.CQRS.Repositories;
+using Sofomo.CQRS.Repositories.Shared;
 
 namespace Sofomo.CQRS.Handlers.CommandHandlers
 {
-    public class DeleteCoordinatesCommandHandler(ILocationRepository _repository)
+    public class DeleteCoordinatesCommandHandler(IUnitOfWork UnitOfWork)
     {
         public async Task HandleAsync(DeleteCoordinatesCommand command)
         {
-            await _repository.DeleteAsync(command.Latitude, command.Longtitude);
-            await _repository.SaveChangesAsync();
+            var locationDto = await UnitOfWork.LocationRepository.GetByCoordinatesAsync(command.Latitude, command.Longtitude);
+            if(locationDto != null) UnitOfWork.LocationRepository.Remove(locationDto);
+            await UnitOfWork.Complete();
         }
     }
 }

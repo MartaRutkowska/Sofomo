@@ -2,12 +2,11 @@
 
 namespace Sofomo.CQRS.Repositories
 {
-    public interface IWeatherRepository : IRepository
+    public interface IWeatherRepository : IRepository<WeatherDto>
     {
-        public Task AddAsync(WeatherDto weather);
+        public Task<WeatherDto?> GetByCoordinatesAsync(double latitude, double longtitude);
 
-        public Task Update(WeatherDto weather, LocationDto location);
+        public Task UpdateForCoordinates(WeatherDto weather, LocationDto location);
 
-        public Task<WeatherDto?> GetAsync(double latitude, double longtitude);
     }
 }
