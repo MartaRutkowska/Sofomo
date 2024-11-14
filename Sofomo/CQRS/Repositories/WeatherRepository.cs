@@ -17,9 +17,9 @@ namespace Sofomo.CQRS.Repositories
             return await DatabaseContext.Weather.SingleOrDefaultAsync(x => x.Location.Longitude == longtitude && x.Location.Latitude == latitude);
         }
 
-        public async Task UpdateForCoordinates(WeatherDto weather, LocationDto location)
+        public async Task UpdateForCoordinates(WeatherDto weather, int locationId)
         {
-            var scope = await DatabaseContext.Locations.SingleAsync(x => x.Id == location.Id);
+            var scope = await DatabaseContext.Locations.SingleAsync(x => x.Id == locationId);
 
             var existingWeather = await DatabaseContext.Weather.SingleOrDefaultAsync(x => x.LocationDtoId == scope.Id);
             if (existingWeather != null)

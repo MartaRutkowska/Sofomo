@@ -6,7 +6,7 @@ namespace Sofomo.CQRS.Repositories
     {
         public Task<WeatherDto?> GetByCoordinatesAsync(double latitude, double longtitude);
 
-        public Task UpdateForCoordinates(WeatherDto weather, LocationDto location);
+        public Task UpdateForCoordinates(WeatherDto weather, int locationId);
 
     }
 }

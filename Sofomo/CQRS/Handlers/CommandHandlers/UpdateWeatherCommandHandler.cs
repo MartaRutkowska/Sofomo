@@ -8,7 +8,10 @@ namespace Sofomo.CQRS.Handlers.CommandHandlers
     {
         public async Task Handle(UpdateWeatherCommand command, CancellationToken cancellationToken)
         {
-            await UnitOfWork.WeatherRepository.UpdateForCoordinates(command.Weather, command.Location);
+            var location = await UnitOfWork.LocationRepository.GetByCoordinatesAsync(command.Location.Latitude, command.Location.Longitude);
+            if (location == null) return;
+
+            await UnitOfWork.WeatherRepository.UpdateForCoordinates(command.Weather, command.Location.Id);
             await UnitOfWork.Complete();
         }
     }
