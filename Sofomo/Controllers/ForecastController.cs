@@ -7,14 +7,15 @@ namespace Sofomo.Controllers
     [ApiController]
     [Route("forecast")]
     public class ForecastController(
-        ForecastService forecastService) : ControllerBase
+        IForecastService forecastService) : ControllerBase
     {
-        private readonly ForecastService _forecastService = forecastService;
+        private readonly IForecastService _forecastService = forecastService;
 
         /// <summary>
         /// Stores provided coordinates
         /// </summary>
         /// <response code="201">Coordinates saved successfully</response>
+        /// <response code="400">Bad request</response>
         /// <response code="500">Oops! Something went wrong</response>
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -29,6 +30,7 @@ namespace Sofomo.Controllers
         /// Retrieves a weather forecast for provided coordinates or returns full list if coordinates not given
         /// </summary>
         /// <response code="200">Forecast retrieved successfully</response>
+        /// <response code="400">Bad request</response>
         /// <response code="500">Oops! Something went wrong</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]

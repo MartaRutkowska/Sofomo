@@ -19,7 +19,7 @@ namespace Sofomo.Services
         UpdateWeatherCommandHandler updateWeatherCommandHandler,
         GetAllLocationsQueryHandler getAllLocationsQueryHandler,
         GetLocationQueryHandler getLocationQueryHandler,
-        GetWeatherQueryHandler getWeatherQueryHandler)
+        GetWeatherQueryHandler getWeatherQueryHandler) : IForecastService
     {
         private readonly ExternalMeteoService _externalService = externalService;
         private readonly IMapper _mapper = mapper;

@@ -23,7 +23,7 @@ builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddTransient<ExternalMeteoService>();
-builder.Services.AddTransient<ForecastService>();
+builder.Services.AddTransient<IForecastService, ForecastService>();
 builder.Services.RegisterServices(builder.Configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
