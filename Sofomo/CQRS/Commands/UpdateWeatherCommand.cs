@@ -1,7 +1,7 @@
-﻿using Sofomo.CQRS.Commands.Shared;
+﻿using MediatR;
 using Sofomo.Domain.Models.Dtos;
 
 namespace Sofomo.CQRS.Commands
 {
-    public record UpdateWeatherCommand(WeatherDto Weather, LocationDto Location) : ICommand;
+    public record UpdateWeatherCommand(WeatherDto Weather, LocationDto Location) : IRequest;
 }
