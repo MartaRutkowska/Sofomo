@@ -12,7 +12,7 @@ This API lets user get/store/delete latest info about weather for provided coord
 
 **API:** .NET Core 8
 **DB:** SQLite + EF
-**Others:** Automapper, FluentValidation, Swagger
+**Others:** MediatR, Automapper, FluentValidation, Swagger
 
 
 ## Run Locally
