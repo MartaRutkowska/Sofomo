@@ -1,14 +1,18 @@
-﻿using Sofomo.CQRS.Commands;
-using Sofomo.CQRS.Repositories;
+﻿using MediatR;
+using Sofomo.CQRS.Commands;
+using Sofomo.CQRS.Repositories.Shared;
 
 namespace Sofomo.CQRS.Handlers.CommandHandlers
 {
-    public class UpdateWeatherCommandHandler(IWeatherRepository _repository)
+    public class UpdateWeatherCommandHandler(IUnitOfWork UnitOfWork) : IRequestHandler<UpdateWeatherCommand>
     {
-        public async Task HandleAsync(UpdateWeatherCommand command)
+        public async Task Handle(UpdateWeatherCommand command, CancellationToken cancellationToken)
         {
-            await _repository.Update(command.Weather, command.Location);
-            await _repository.SaveChangesAsync();
+            var location = await UnitOfWork.LocationRepository.GetByCoordinatesAsync(command.Location.Latitude, command.Location.Longitude);
+            if (location == null) return;
+
+            await UnitOfWork.WeatherRepository.UpdateForCoordinates(command.Weather, command.Location.Id);
+            await UnitOfWork.Complete();
         }
     }
 }

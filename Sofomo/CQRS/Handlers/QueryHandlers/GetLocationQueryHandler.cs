@@ -1,14 +1,15 @@
-﻿using Sofomo.CQRS.Queries;
-using Sofomo.CQRS.Repositories;
+﻿using MediatR;
+using Sofomo.CQRS.Queries;
+using Sofomo.CQRS.Repositories.Shared;
 using Sofomo.Domain.Models.Dtos;
 
 namespace Sofomo.CQRS.Handlers.QueryHandlers
 {
-    public class GetLocationQueryHandler(ILocationRepository _locationRepository)
+    public class GetLocationQueryHandler(IUnitOfWork UnitOfWork) : IRequestHandler<GetLocationQuery, LocationDto?>
     {
-        public async Task<LocationDto?> HandleAsync(GetLocationQuery query)
+        public async Task<LocationDto?> Handle(GetLocationQuery request, CancellationToken cancellationToken)
         {
-            return await _locationRepository.GetAsync(query.Latitude, query.Longitude);
+            return await UnitOfWork.LocationRepository.GetByCoordinatesAsync(request.Latitude, request.Longitude);
         }
     }
 }

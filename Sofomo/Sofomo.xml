@@ -4,21 +4,23 @@
         <name>Sofomo</name>
     </assembly>
     <members>
-        <member name="M:Sofomo.Controllers.ForecastController.AddForecast(Sofomo.Domain.Models.Request.Coordinates)">
+        <member name="M:Sofomo.Controllers.ForecastController.AddForecast(Sofomo.Domain.Models.Request.Coordinates,System.Threading.CancellationToken)">
             <summary>
             Stores provided coordinates
             </summary>
             <response code="201">Coordinates saved successfully</response>
+            <response code="400">Bad request</response>
             <response code="500">Oops! Something went wrong</response>
         </member>
-        <member name="M:Sofomo.Controllers.ForecastController.Get(System.String,System.String)">
+        <member name="M:Sofomo.Controllers.ForecastController.Get(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Retrieves a weather forecast for provided coordinates or returns full list if coordinates not given
             </summary>
             <response code="200">Forecast retrieved successfully</response>
+            <response code="400">Bad request</response>
             <response code="500">Oops! Something went wrong</response>
         </member>
-        <member name="M:Sofomo.Controllers.ForecastController.DeleteForecast(Sofomo.Domain.Models.Request.Coordinates)">
+        <member name="M:Sofomo.Controllers.ForecastController.DeleteForecast(Sofomo.Domain.Models.Request.Coordinates,System.Threading.CancellationToken)">
             <summary>
             Removes provided coordinates
             </summary>

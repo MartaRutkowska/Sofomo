@@ -11,7 +11,7 @@ namespace Sofomo.CQRS.Handlers
             services.AddTransient<GetAllLocationsQueryHandler>();
             services.AddTransient<GetLocationQueryHandler>();
             services.AddTransient<GetWeatherQueryHandler>();
-            services.AddTransient<DeleteCoordinatesCommandHandler>();
+            services.AddTransient<RemoveCoordinatesCommandHandler>();
             services.AddTransient<UpdateWeatherCommandHandler>();
         }
     }

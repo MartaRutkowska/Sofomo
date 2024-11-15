@@ -1,7 +1,7 @@
-﻿using Sofomo.CQRS.Queries.Shared;
+﻿using MediatR;
 using Sofomo.Domain.Models.Dtos;
 
 namespace Sofomo.CQRS.Queries
 {
-    public record GetAllLocationsQuery() : IQuery<LocationDto>;
+    public record GetAllLocationsQuery() : IRequest<IEnumerable<LocationDto>>;
 }

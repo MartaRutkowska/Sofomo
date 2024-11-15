@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
+using MediatR;
 using Sofomo.CQRS.Commands;
-using Sofomo.CQRS.Handlers.CommandHandlers;
-using Sofomo.CQRS.Handlers.QueryHandlers;
 using Sofomo.CQRS.Queries;
 using Sofomo.Domain.Models.Dtos;
 using Sofomo.Domain.Models.Request;
@@ -13,42 +12,33 @@ namespace Sofomo.Services
     public class ForecastService(
         ExternalMeteoService externalService,
         IMapper mapper,
-        AddCoordinatesCommandHandler addCoordinatesCommandHandler,
-        DeleteCoordinatesCommandHandler deleteCoordinatesCommandHandler,
-        UpdateWeatherCommandHandler updateWeatherCommandHandler,
-        GetAllLocationsQueryHandler getAllLocationsQueryHandler,
-        GetLocationQueryHandler getLocationQueryHandler,
-        GetWeatherQueryHandler getWeatherQueryHandler)
+        IMediator mediator) : IForecastService
     {
         private readonly ExternalMeteoService _externalService = externalService;
         private readonly IMapper _mapper = mapper;
-        private readonly AddCoordinatesCommandHandler _addCoordinatesCommandHandler = addCoordinatesCommandHandler;
-        private readonly DeleteCoordinatesCommandHandler _deleteCoordinatesCommandHandler = deleteCoordinatesCommandHandler;
-        private readonly UpdateWeatherCommandHandler _updateWeatherCommandHandler = updateWeatherCommandHandler;
-        private readonly GetAllLocationsQueryHandler _getallLocationsQueryHandler = getAllLocationsQueryHandler;
-        private readonly GetLocationQueryHandler _getLocationQueryHandler = getLocationQueryHandler;
-        private readonly GetWeatherQueryHandler _getWeatherQueryHandler = getWeatherQueryHandler;
+        private readonly IMediator mediator = mediator;
 
-        public async Task<Forecast?> Get(Coordinates coordinates)
+        public async Task<Forecast?> Get(Coordinates coordinates, CancellationToken cancellationToken)
         {
             var getLocationQuery = new GetLocationQuery(coordinates.Latitude, coordinates.Longitude);
-            var locationDto = await _getLocationQueryHandler.HandleAsync(getLocationQuery);
+            var locationDto = await mediator.Send(getLocationQuery, cancellationToken);
 
             if (locationDto == null) return null;
 
             var weather = await _externalService.Get(coordinates);
             if (weather != null)
             {
-                return await CreateForecastFromMeteo(coordinates, locationDto, weather);
+                return await CreateForecastFromMeteo(coordinates, locationDto, weather, cancellationToken);
             }
 
-            return await CreateResponseFromDatabase(coordinates);
+            return await CreateResponseFromDatabase(coordinates, cancellationToken);
         }
 
-        private async Task<Forecast?> CreateResponseFromDatabase(Coordinates coordinates)
+        private async Task<Forecast?> CreateResponseFromDatabase(Coordinates coordinates, CancellationToken cancellationToken)
         {
             var weatherQuery = new GetWeatherQuery(coordinates.Latitude, coordinates.Longitude);
-            var lastSavedWeather = await _getWeatherQueryHandler.HandleAsync(weatherQuery);
+            var lastSavedWeather = await mediator.Send(weatherQuery, cancellationToken);
+
             return new Forecast
             {
                 Coordinates = coordinates,
@@ -56,7 +46,7 @@ namespace Sofomo.Services
             };
         }
 
-        private async Task<Forecast> CreateForecastFromMeteo(Coordinates coordinates, LocationDto? locationDto, Weather weather)
+        private async Task<Forecast> CreateForecastFromMeteo(Coordinates coordinates, LocationDto? locationDto, Weather weather, CancellationToken cancellationToken)
         {
             if (locationDto == null) return new Forecast { Coordinates = coordinates };
 
@@ -71,7 +61,7 @@ namespace Sofomo.Services
 
             };
             var command = new UpdateWeatherCommand(updatedWeather, locationDto);
-            await _updateWeatherCommandHandler.HandleAsync(command);
+            await mediator.Send(command, cancellationToken);
 
             return new Forecast
             {
@@ -80,35 +70,35 @@ namespace Sofomo.Services
             };
         }
 
-        public async Task<List<Forecast?>> GetAll()
+        public async Task<List<Forecast?>> GetAll(CancellationToken cancellationToken)
         {
             var command = new GetAllLocationsQuery();
-            var locations = await _getallLocationsQueryHandler.HandleAsync(command);
+            var locations = await mediator.Send(command, cancellationToken);
 
             var result = new List<Forecast?>();
             foreach (var location in locations)
             {
                 result.Add(
                     await Get(
-                        _mapper.Map<Coordinates>(location)));
+                        _mapper.Map<Coordinates>(location), cancellationToken));
             }
 
             return result;
         }
 
-        public async Task<bool> AddCoordinates(Coordinates coordinates)
+        public async Task<bool> AddCoordinates(Coordinates coordinates, CancellationToken cancellationToken)
         {
             if (!new CoordinatesValidator().Validate(coordinates).IsValid) return false;
 
             var command = new AddCoordinatesCommand(coordinates.Latitude, coordinates.Longitude);
-            await _addCoordinatesCommandHandler.HandleAsync(command);
+            await mediator.Send(command, cancellationToken);
             return true;
         }
 
-        public async Task DeleteCoordinatesAsync(Coordinates coordinates)
+        public async Task DeleteCoordinatesAsync(Coordinates coordinates, CancellationToken cancellationToken)
         {
-            var command = new DeleteCoordinatesCommand(coordinates.Latitude, coordinates.Longitude);
-            await _deleteCoordinatesCommandHandler.HandleAsync(command);
+            var command = new RemoveCoordinatesCommand(coordinates.Latitude, coordinates.Longitude);
+            await mediator.Send(command, cancellationToken);
         }
     }
 }
