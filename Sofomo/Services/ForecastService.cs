@@ -1,39 +1,27 @@
 ﻿using AutoMapper;
+using MediatR;
 using Sofomo.CQRS.Commands;
-using Sofomo.CQRS.Handlers.CommandHandlers;
-using Sofomo.CQRS.Handlers.QueryHandlers;
 using Sofomo.CQRS.Queries;
 using Sofomo.Domain.Models.Dtos;
 using Sofomo.Domain.Models.Request;
 using Sofomo.Domain.Models.Response;
 using Sofomo.Utils.Validators;
-using System.Threading;
 
 namespace Sofomo.Services
 {
     public class ForecastService(
         ExternalMeteoService externalService,
         IMapper mapper,
-        AddCoordinatesCommandHandler addCoordinatesCommandHandler,
-        RemoveCoordinatesCommandHandler deleteCoordinatesCommandHandler,
-        UpdateWeatherCommandHandler updateWeatherCommandHandler,
-        GetAllLocationsQueryHandler getAllLocationsQueryHandler,
-        GetLocationQueryHandler getLocationQueryHandler,
-        GetWeatherQueryHandler getWeatherQueryHandler) : IForecastService
+        IMediator mediator) : IForecastService
     {
         private readonly ExternalMeteoService _externalService = externalService;
         private readonly IMapper _mapper = mapper;
-        private readonly AddCoordinatesCommandHandler _addCoordinatesCommandHandler = addCoordinatesCommandHandler;
-        private readonly RemoveCoordinatesCommandHandler _deleteCoordinatesCommandHandler = deleteCoordinatesCommandHandler;
-        private readonly UpdateWeatherCommandHandler _updateWeatherCommandHandler = updateWeatherCommandHandler;
-        private readonly GetAllLocationsQueryHandler _getallLocationsQueryHandler = getAllLocationsQueryHandler;
-        private readonly GetLocationQueryHandler _getLocationQueryHandler = getLocationQueryHandler;
-        private readonly GetWeatherQueryHandler _getWeatherQueryHandler = getWeatherQueryHandler;
+        private readonly IMediator mediator = mediator;
 
         public async Task<Forecast?> Get(Coordinates coordinates, CancellationToken cancellationToken)
         {
             var getLocationQuery = new GetLocationQuery(coordinates.Latitude, coordinates.Longitude);
-            var locationDto = await _getLocationQueryHandler.Handle(getLocationQuery, cancellationToken);
+            var locationDto = await mediator.Send(getLocationQuery, cancellationToken);
 
             if (locationDto == null) return null;
 
@@ -49,7 +37,8 @@ namespace Sofomo.Services
         private async Task<Forecast?> CreateResponseFromDatabase(Coordinates coordinates, CancellationToken cancellationToken)
         {
             var weatherQuery = new GetWeatherQuery(coordinates.Latitude, coordinates.Longitude);
-            var lastSavedWeather = await _getWeatherQueryHandler.Handle(weatherQuery, cancellationToken);
+            var lastSavedWeather = await mediator.Send(weatherQuery, cancellationToken);
+
             return new Forecast
             {
                 Coordinates = coordinates,
@@ -72,7 +61,7 @@ namespace Sofomo.Services
 
             };
             var command = new UpdateWeatherCommand(updatedWeather, locationDto);
-            await _updateWeatherCommandHandler.Handle(command, cancellationToken);
+            await mediator.Send(command, cancellationToken);
 
             return new Forecast
             {
@@ -84,7 +73,7 @@ namespace Sofomo.Services
         public async Task<List<Forecast?>> GetAll(CancellationToken cancellationToken)
         {
             var command = new GetAllLocationsQuery();
-            var locations = await _getallLocationsQueryHandler.Handle(command, cancellationToken);
+            var locations = await mediator.Send(command, cancellationToken);
 
             var result = new List<Forecast?>();
             foreach (var location in locations)
@@ -102,14 +91,14 @@ namespace Sofomo.Services
             if (!new CoordinatesValidator().Validate(coordinates).IsValid) return false;
 
             var command = new AddCoordinatesCommand(coordinates.Latitude, coordinates.Longitude);
-            await _addCoordinatesCommandHandler.Handle(command, cancellationToken);
+            await mediator.Send(command, cancellationToken);
             return true;
         }
 
         public async Task DeleteCoordinatesAsync(Coordinates coordinates, CancellationToken cancellationToken)
         {
             var command = new RemoveCoordinatesCommand(coordinates.Latitude, coordinates.Longitude);
-            await _deleteCoordinatesCommandHandler.Handle(command, cancellationToken);
+            await mediator.Send(command, cancellationToken);
         }
     }
 }
