@@ -6,6 +6,7 @@ using Sofomo.CQRS.Handlers;
 using Sofomo.CQRS.Repositories;
 using Sofomo.CQRS.Repositories.Shared;
 using Sofomo.Services;
+using Sofomo.Utils.Exceptions;
 using Sofomo.Utils.Mappers;
 using Swashbuckle.Swagger;
 using System.Reflection;
@@ -47,6 +48,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
